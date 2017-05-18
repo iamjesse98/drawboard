@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<title>Board</title>
+</head>
+<body style="padding: 0; margin: 0; overflow-x: hidden;">
+<canvas id="board" width="800" height="800"></canvas>
+<script>
+let bd = document.querySelector(`#board`)
+let ctx = bd.getContext(`2d`)
+bd.width = window.innerWidth
+bd.height = 10*window.innerHeight
+ctx.strokeStyle = `#000`
+bd.style.background = `orange`
+ctx.lineJoin = `round`
+ctx.lineCap = `round`
+ctx.lineWidth = 2.5
+colors = {
+	80: 'pink',
+	87: '#fff',
+	71: '#bada55',
+	66: '#000',
+	65: 'skyblue',
+	89: 'yellow',
+	79: 'orange',
+	82: 'red',
+	75: '#AD1457',
+	88: '#5D4037',
+	70: '#009688'
+}
+backs = {
+	49: '#fff',
+	50: '#000',
+	51: '#C2185B',
+	52: 'orange',
+	53: 'skyblue',
+	54: '#1B5E20',
+	55: '#212121',
+	56: '#BF360C',
+	57: '#0D47A1',
+	48: '#880E4F'
+}
+ctx.font="20px Arial"
+ctx.fillStyle = "red"
+bd.style.cursor = 'pointer'
+window.addEventListener(`keydown`, e => {
+	console.log(e.keyCode)
+	ctx.strokeStyle = colors[e.keyCode]
+	ctx.fillStyle = colors[e.keyCode]
+	bd.style.background = backs[e.keyCode]
+	if (e.keyCode == 84) {
+		let text = prompt("Enter the text")
+		console.log(text)
+		ctx.fillText(text, lastX+10, lastY+10)
+	}
+	if (e.keyCode == 67) {
+		bd.style.cursor = bd.style.cursor == 'pointer' ? 'crosshair' : 'pointer'
+	}
+})
+let [ isDrawing, lastX, lastY ] = [ false, 0, 0 ]
+function draw(e) {
+	if ( !isDrawing ) return // stop the fn from running when they are not moused down
+	ctx.beginPath()
+	// start from
+	ctx.moveTo(lastX, lastY)
+	// go to
+	ctx.lineTo(e.offsetX, e.offsetY)
+	ctx.stroke()
+	lastX = e.offsetX
+	lastY = e.offsetY
+}
+bd.addEventListener(`mousemove`, draw)
+bd.addEventListener(`mousedown`, e => [ isDrawing, lastX, lastY ] = [ true, e.offsetX, e.offsetY ])
+bd.addEventListener(`mouseup`, () => isDrawing = false)
+bd.addEventListener(`mouseout`, () => isDrawing = false)
+</script>
+</body>
+</html>
